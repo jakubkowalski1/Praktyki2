@@ -45,6 +45,25 @@ namespace ProjektPraktyki_2._0.Migrations
 
                     b.ToTable("Companys");
                 });
+
+            modelBuilder.Entity("ProjektPraktyki_2._0.Models.Contact", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Contact_Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Contact_Telephone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Contacts");
+                });
 #pragma warning restore 612, 618
         }
     }

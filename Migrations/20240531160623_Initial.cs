@@ -25,6 +25,20 @@ namespace ProjektPraktyki_2._0.Migrations
                 {
                     table.PrimaryKey("PK_Companys", x => x.ID);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Contact_Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Contact_Telephone = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contacts", x => x.ID);
+                });
         }
 
         /// <inheritdoc />
@@ -32,6 +46,9 @@ namespace ProjektPraktyki_2._0.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Companys");
+
+            migrationBuilder.DropTable(
+                name: "Contacts");
         }
     }
 }
