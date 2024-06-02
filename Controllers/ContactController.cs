@@ -50,7 +50,7 @@ namespace ProjektPraktyki_2._0.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
 
         public async Task<ActionResult> PutContact(int id, Contact contact)
         {
