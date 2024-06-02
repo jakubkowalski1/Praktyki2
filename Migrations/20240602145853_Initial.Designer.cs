@@ -11,7 +11,7 @@ using ProjektPraktyki_2._0.Models;
 namespace ProjektPraktyki_2._0.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20240531160623_Initial")]
+    [Migration("20240602145853_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -57,6 +57,9 @@ namespace ProjektPraktyki_2._0.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
+                    b.Property<int>("CompanyID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Contact_Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -65,7 +68,23 @@ namespace ProjektPraktyki_2._0.Migrations
 
                     b.HasKey("ID");
 
+                    b.HasIndex("CompanyID");
+
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("ProjektPraktyki_2._0.Models.Contact", b =>
+                {
+                    b.HasOne("ProjektPraktyki_2._0.Models.Company", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("CompanyID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjektPraktyki_2._0.Models.Company", b =>
+                {
+                    b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618
         }

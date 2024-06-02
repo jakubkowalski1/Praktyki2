@@ -24,7 +24,7 @@ namespace ProjektPraktyki_2._0.Controllers
             {
                 return NotFound();
             }
-            return await _dbContext.Companys.ToListAsync();
+            return await _dbContext.Companys.Include(s => s.Contacts).ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -34,7 +34,7 @@ namespace ProjektPraktyki_2._0.Controllers
             {
                 return NotFound();
             }
-            var Company = await _dbContext.Companys.FindAsync(id);
+            var Company = await _dbContext.Companys.Include(s => s.Contacts).FirstOrDefaultAsync(s => s.ID == id);
             if (Company == null) 
             {
                 return NotFound();
@@ -52,7 +52,7 @@ namespace ProjektPraktyki_2._0.Controllers
             return CreatedAtAction(nameof(GetCompany), new { id = company.ID }, company);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
 
         public async Task<ActionResult> PutCompany(int id, Company company)
         {
