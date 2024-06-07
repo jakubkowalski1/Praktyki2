@@ -1,73 +1,65 @@
 using Microsoft.EntityFrameworkCore;
 using ProjektPraktyki_2._0.Models;
-
-
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.\
-
+// Dodaj us³ugi do kontenera
 builder.Services.AddDbContext<CompanyContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("CompanyCS")));
-
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CompanyCS")));
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Konfiguracja potoku HTTP
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
-
-var appBuilder = WebApplication.CreateBuilder(args);
-
-// Dodaj us³ugi do kontenera.
-appBuilder.Services.AddControllersWithViews();
-
-var bApp = builder.Build();
-
-// Skonfiguruj potok HTTP.
-if (bApp.Environment.IsDevelopment())
-{
-    bApp.UseDeveloperExceptionPage();
-}
 else
 {
-    bApp.UseExceptionHandler("/Home/Error");
-    bApp.UseHsts();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
-bApp.UseHttpsRedirection();
-bApp.UseStaticFiles();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-bApp.UseRouting();
+app.UseRouting();
+app.UseAuthorization();
 
-bApp.UseAuthorization();
-
-bApp.MapControllerRoute(
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// Konfiguracja SPA
 app.UseSpa(spa =>
 {
-    spa.Options.SourcePath = "ClientApp";
+    spa.Options.SourcePath = "clientapp";
 
-    if (bApp.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment())
     {
         spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
     }
+    else
+    {
+        // W produkcji s³u¿ pliki statyczne z katalogu build
+        spa.Options.SourcePath = "clientapp/build";
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(
+                Path.Combine(builder.Environment.ContentRootPath, "clientapp/build")),
+            RequestPath = ""
+        });
+        app.MapFallbackToFile("index.html");
+    }
 });
 
-bApp.Run();
+app.Run();
+
+
+
